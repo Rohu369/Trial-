@@ -1,0 +1,38 @@
+import sys 
+import time
+from pyQt4.Qtcore import *
+from pyQt4.QtGui import *
+from pyQt4.QtWebKit import *
+
+class Screenshot(Qwebview):
+    def __init__(self):
+        self.app = QApplication(sys.argv) 
+        QWebView.__init__(self)
+        self.loaded = False
+        self.loadFinished.connect(self._loadFinished) 
+        
+    def capture(self,url, output_file):
+        self.load(QUrl(url)
+        frame = self.page().mainFrame()
+        self.page().setViewportSize(frame.contentsSize())
+        
+        image = QImage(self.page().viewportSize(),QImage.Format_ARGB32)
+        painter = QPainter(image) 
+        frame.render(painter)
+        painter.end()
+        print 'saving', output_file
+        image.save(output_file)
+        
+    def wait_load(self, delay=0):
+        while not self._loaded:
+            self.app.processEvents()
+            time.sleep(delay)
+        self._loaded  = False
+        
+    def _loadFinshed(self,result):
+        self._loaded = True
+        
+        
+ s = Screenshot()
+ 
+          
